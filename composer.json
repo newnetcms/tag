@@ -1,0 +1,19 @@
+{
+    "name": "newnetcms/tag",
+    "description": "Tag Manager",
+    "autoload": {
+        "psr-4": {
+            "Newnet\\Tag\\": "/src"
+        },
+        "files": [
+            "helpers/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Newnet\\Tag\\TagServiceProvider"
+            ]
+        }
+    }
+}
