@@ -104,7 +104,9 @@ class Tag extends Model
      */
     public function setSlugAttribute($value): void
     {
-        $this->attributes['slug'] = Str::slug($value, $this->getSlugOptions()->slugSeparator, $this->getSlugOptions()->slugLanguage);
+        $slug = get_safe_slug($value);
+
+        $this->attributes['slug'] = $slug;
     }
 
     public function getSlugOptions()
