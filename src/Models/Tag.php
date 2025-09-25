@@ -95,38 +95,12 @@ class Tag extends Model
         return $this->morphedByMany($class, 'taggable', 'taggables', 'tag_id', 'taggable_id');
     }
 
-    /**
-     * Enforce clean slugs.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setSlugAttribute($value): void
-    {
-        $slug = get_safe_slug($value);
-
-        $this->attributes['slug'] = $slug;
-    }
-
     public function getSlugOptions()
     {
         return SlugOptions::create()
             ->doNotGenerateSlugsOnUpdate()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
-    }
-
-    /**
-     * Enforce clean groups.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setGroupAttribute($value): void
-    {
-        $this->attributes['group'] = Str::slug($value);
     }
 
     /**
@@ -178,9 +152,18 @@ class Tag extends Model
     {
         $locale = $locale ?? app()->getLocale();
 
-        $tag = get_safe_slug($tag);
-
         return static::query()->where("name->{$locale}", $tag)->when($group, function (Builder $builder) use ($group) {
+            return $builder->where('group', $group);
+        })->first();
+    }
+
+    public static function firstBySlug(string $tag, string $group = null, string $locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        $slug = get_safe_slug($tag);
+
+        return static::query()->where("slug", $slug)->when($group, function (Builder $builder) use ($group) {
             return $builder->where('group', $group);
         })->first();
     }
@@ -198,10 +181,18 @@ class Tag extends Model
     {
         $locale = $locale ?? app()->getLocale();
 
+        // Check Slug
+        $findBySlug = static::firstBySlug($tag, $group, $locale);
+        if ($findBySlug) {
+            $slug = $tag;
+        } else {
+            $slug = get_safe_slug($tag);
+        }
+
         return static::create([
             'name' => [$locale => $tag],
             'group' => $group,
-            'slug' => $tag,
+            'slug' => $slug,
         ]);
     }
 
