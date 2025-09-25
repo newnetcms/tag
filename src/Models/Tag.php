@@ -178,6 +178,8 @@ class Tag extends Model
     {
         $locale = $locale ?? app()->getLocale();
 
+        $tag = get_safe_slug($tag);
+
         return static::query()->where("name->{$locale}", $tag)->when($group, function (Builder $builder) use ($group) {
             return $builder->where('group', $group);
         })->first();
