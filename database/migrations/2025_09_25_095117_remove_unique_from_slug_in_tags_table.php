@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tags', function (Blueprint $table) {
-            $table->dropUnique(['slug']); // gỡ unique index của cột slug
+            if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+                Schema::table('tags', function (Blueprint $table) {
+                    $table->dropUnique('tags_slug_unique');
+                });
+            }
         });
     }
 
