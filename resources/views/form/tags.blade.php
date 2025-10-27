@@ -46,4 +46,4 @@
 @assetadd('select2', asset("vendor/newnet-admin/plugins/select2/dist/css/select2.min.css"))
 @assetadd('select2', asset("vendor/newnet-admin/plugins/select2/dist/js/select2.min.js"), ['jquery'])
 @assetadd('select2-bootstrap4', asset("vendor/newnet-admin/plugins/select2-bootstrap4/dist/select2-bootstrap4.min.css"), ['jquery', 'bootstrap', 'select2'])
-@assetadd('tag-script', asset("vendor/tag/admin/js/tag.js"), ['jquery', 'select2'])
+@assetadd('tag-script', "vendor/tag/admin/js/tag.js", ['jquery', 'select2'])
