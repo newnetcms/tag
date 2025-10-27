@@ -49,9 +49,9 @@ use Newnet\Tag\Traits\TaggableTrait;
  */
 class Tag extends Model
 {
-    use SeoableTrait;
+//    use SeoableTrait;
     use TranslatableTrait;
-    use SoftDeletes;
+//    use SoftDeletes;
 
     protected $table = 'tags';
 
@@ -198,6 +198,14 @@ class Tag extends Model
 
     public function getUrl()
     {
-        return route('tag.web.tag.detail', $this->slug);
+        return route('tag.web.tag.detail', [
+            'slug' => $this->slug,
+            'id' => $this->id,
+        ]);
+    }
+
+    public function getUrlAttribute()
+    {
+        return $this->getUrl();
     }
 }

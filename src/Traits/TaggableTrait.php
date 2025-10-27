@@ -87,8 +87,9 @@ trait TaggableTrait
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable', 'taggables', 'taggable_id', 'tag_id')
-            ->orderBy('sort_order')
-            ->withTimestamps();
+            ->withPivot('sort_order')     // 🔹 cho phép truy cập sort_order từ pivot
+            ->withTimestamps()             // 🔹 vẫn lưu created_at / updated_at
+            ->orderBy('pivot_sort_order'); // 🔹 sắp xếp theo thứ tự chọn
     }
 
     /**
@@ -292,7 +293,14 @@ trait TaggableTrait
      */
     public function syncTags($tags, bool $detaching = true)
     {
-        $this->tags()->sync($this->parseTags($tags, null, null, true), $detaching);
+        $tagIds = $this->parseTags($tags, null, null, true);
+
+        $syncData = [];
+        foreach (array_values($tagIds) as $index => $tagId) {
+            $syncData[$tagId] = ['sort_order' => $index + 1];
+        }
+
+        $this->tags()->sync($syncData, $detaching);
 
         return $this;
     }

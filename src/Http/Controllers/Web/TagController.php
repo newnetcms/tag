@@ -7,9 +7,9 @@ use Newnet\Tag\Models\Tag;
 
 class TagController extends Controller
 {
-    public function detail($slug)
+    public function detail($slug, $id)
     {
-        $tag = Tag::where('slug', $slug)->firstOrFail();
+        $tag = Tag::findorFail($id);
 
         return view('tag::web.tag.detail', compact('tag'));
     }
