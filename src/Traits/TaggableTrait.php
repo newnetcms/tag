@@ -14,7 +14,7 @@ trait TaggableTrait
     public static function bootTaggableTrait()
     {
         static::saved(function (self $model) {
-            if (request()->has('tags')){
+            if (request()->has('tags')) {
                 $model->syncTags(request()->input('tags'));
             }
         });
@@ -150,7 +150,7 @@ trait TaggableTrait
      *
      * @return Builder
      */
-    public function scopeWithAllTags(Builder $builder, $tags, string $group = null, string $locale = null): Builder
+    public function scopeWithAllTags(Builder $builder, $tags, ?string $group = null, ?string $locale = null): Builder
     {
         $tags = $this->parseTags($tags, $group, $locale);
 
@@ -175,7 +175,7 @@ trait TaggableTrait
      *
      * @return Builder
      */
-    public function scopeWithAnyTags(Builder $builder, $tags, string $group = null, string $locale = null): Builder
+    public function scopeWithAnyTags(Builder $builder, $tags, ?string $group = null, ?string $locale = null): Builder
     {
         $tags = $this->parseTags($tags, $group, $locale);
 
@@ -196,7 +196,7 @@ trait TaggableTrait
      *
      * @return Builder
      */
-    public function scopeWithoutTags(Builder $builder, $tags, string $group = null, string $locale = null): Builder
+    public function scopeWithoutTags(Builder $builder, $tags, ?string $group = null, ?string $locale = null): Builder
     {
         $tags = $this->parseTags($tags, $group, $locale);
 
@@ -228,11 +228,11 @@ trait TaggableTrait
      *
      * @return bool
      */
-    public function hasAnyTags($tags, string $group = null, string $locale = null): bool
+    public function hasAnyTags($tags, ?string $group = null, ?string $locale = null): bool
     {
         $tags = $this->parseTags($tags, $group, $locale);
 
-        return ! $this->tags->pluck('id')->intersect($tags)->isEmpty();
+        return !$this->tags->pluck('id')->intersect($tags)->isEmpty();
     }
 
     /**
@@ -244,7 +244,7 @@ trait TaggableTrait
      *
      * @return bool
      */
-    public function hasAllTags($tags, string $group = null, string $locale = null): bool
+    public function hasAllTags($tags, ?string $group = null, ?string $locale = null): bool
     {
         $tags = $this->parseTags($tags, $group, $locale);
 
@@ -314,7 +314,7 @@ trait TaggableTrait
      */
     public function detachTags($tags = null)
     {
-        ! $tags || $tags = $this->parseTags($tags);
+        !$tags || $tags = $this->parseTags($tags);
 
         $this->tags()->detach($tags);
 
@@ -331,16 +331,16 @@ trait TaggableTrait
      *
      * @return array
      */
-    protected function parseTags($rawTags, string $group = null, string $locale = null, $create = false): array
+    protected function parseTags($rawTags, ?string $group = null, ?string $locale = null, $create = false): array
     {
         (is_iterable($rawTags) || is_null($rawTags)) || $rawTags = [$rawTags];
 
         [$strings, $tags] = collect($rawTags)->map(function ($tag) {
-            ! is_numeric($tag) || $tag = (int) $tag;
+            !is_numeric($tag) || $tag = (int) $tag;
 
-            ! $tag instanceof Model || $tag = [$tag->getKey()];
-            ! $tag instanceof Collection || $tag = $tag->modelKeys();
-            ! $tag instanceof BaseCollection || $tag = $tag->toArray();
+            !$tag instanceof Model || $tag = [$tag->getKey()];
+            !$tag instanceof Collection || $tag = $tag->modelKeys();
+            !$tag instanceof BaseCollection || $tag = $tag->toArray();
 
             return $tag;
         })->partition(function ($item) {
